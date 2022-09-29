@@ -1,0 +1,45 @@
+.LetterBox {
+  --size: 50px;
+  width: var(--size);
+  height: var(--size);
+
+  background: rgba(255, 255, 255, 0.7);
+  cursor: text;
+
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.LetterBox::before {
+  display: block;
+  content: " ";
+  width: calc(var(--size) + 1px);
+  height: calc(var(--size) + 1px);
+  position: absolute;
+
+  top: -.5px;
+  left: -.5px;
+
+  background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='%23808080FF' stroke-width='2' stroke-dasharray='12.5%' stroke-dashoffset='6.25%' stroke-linecap='square'/%3e%3c/svg%3e");
+  cursor: default;
+}
+
+.LetterBox input {
+  display: block;
+  position: absolute;
+  width: 100%;
+  /*height: clamp(40px, 70%, 70%);*/
+  height: 90%;
+
+  padding: 0;
+  margin: 0;
+
+  border: none;
+  background: transparent;
+  outline: none;
+  text-align: center;
+  font-weight: bold;
+  font-size: 40px;
+}
