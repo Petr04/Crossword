@@ -3,7 +3,7 @@ import useField from '../hooks/useField'
 import useWords from '../hooks/useWords'
 import LetterBox from './LetterBox'
 import useDelta from '../hooks/useDelta'
-import { sum } from '../lib/array'
+import { sum, sub } from '../lib/array'
 
 function Crossword({layout}) {
   const [width, height] = [layout.cols, layout.rows] // wrap in hook
@@ -18,12 +18,19 @@ function Crossword({layout}) {
   const handleInput = useCallback((i, j, newVal) => {
     if (newVal.length >= field[i][j].length && newVal.length > 0) {
       const nextFocused = sum(focused, delta)
-      if (cellWords[nextFocused[0]][nextFocused[1]]) {
+      if ((cellWords[nextFocused[0]] || [])[nextFocused[1]])
         setFocused(nextFocused)
-      }
     }
 
     setCell(i, j, newVal)
+  })
+
+  const handleKeyDown = useCallback((i, j, e) => {
+    if (e.key === 'Backspace' && field[i][j] === '') {
+      const nextFocused = sub(focused, delta)
+      if ((cellWords[nextFocused[0]] || [])[nextFocused[1]])
+        setFocused(nextFocused)
+    }
   })
 
   const containerStyle = {
@@ -46,6 +53,7 @@ function Crossword({layout}) {
             onFocus={() => {
               setFocused([i, j])
             }}
+            onKeyDown={e => handleKeyDown(i, j, e)}
           />
         )
       )}

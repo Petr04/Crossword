@@ -25,8 +25,14 @@ function LetterBox(params) {
           params.onInput(newValue)
           setValue(newValue)
         }}
-        onFocus={params.onFocus}
+        onFocus={e => {
+          e.currentTarget.setSelectionRange(
+            e.currentTarget.value.length, e.currentTarget.value.length
+          )
+          params.onFocus(e)
+        }}
         onBlur={params.onBlur}
+        onKeyDown={params.onKeyDown}
       />
     </div>
   )
