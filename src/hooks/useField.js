@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react'
 import iterateWord from '../lib/iterateWord'
-import { generate, change } from '../lib/array'
+import { generate, change } from '../lib/array2d'
 
 function genField(width, height, result, f) {
   const field = generate(width, height, null)

@@ -1,9 +1,14 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import '../styles/LetterBox.css'
 
 function LetterBox(params) {
   const [value, setValue] = useState(params.value || '')
-  const lastValue = useRef(value)
+
+  const input = useRef(null)
+  useEffect(
+    () => params.focus ? input.current.focus() : input.current.blur(),
+    [params]
+  )
 
   return (
     <div
@@ -12,13 +17,14 @@ function LetterBox(params) {
     >
       <input
         type="text"
+        ref={input}
         onInput={e => {
           const newValue = (e.target.value[0] || '').toUpperCase()
-          lastValue.current = value
-          if (newValue !== lastValue.current)
-            params.onInput(newValue)
+          params.onInput(newValue)
           setValue(newValue)
         }}
+        onFocus={params.onFocus}
+        onBlur={params.onBlur}
         value={value}
       />
     </div>
