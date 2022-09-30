@@ -14,7 +14,7 @@ function useOrientationWordsList(field, result, orientation) {
   return useState(ret)
 }
 
-function useWords(field, result, cellPositions, xChange, yChange) {
+function useWords(field, result, cellWords, xChange, yChange) {
   const [hWords, setHWords] = useOrientationWordsList(field, result, 'across')
   const [vWords, setVWords] = useOrientationWordsList(field, result, 'down')
 
@@ -27,23 +27,19 @@ function useWords(field, result, cellPositions, xChange, yChange) {
     if (xChange === null || yChange === null)
       return ret
 
-    const {positions, orientations} = cellPositions[xChange][yChange]
+    const words = cellWords[xChange][yChange]
 
-    for (let i in positions) {
-      const position = positions[i]
-      const orientation = orientations[i]
-
-      const [word] = result.filter(word => word.position === position)
-      const [start, changed] = orientation === 'across'
+    for (let word of words) {
+      const [start, changed] = word.orientation === 'across'
         ? [word.startx, xChange]
         : [word.starty, yChange]
 
-      const setWords = orientation === 'across'
+      const setWords = word.orientation === 'across'
         ? setHWords
         : setVWords
 
-      const newWords = {...ret[orientation]}
-      newWords[position][changed - start] = field[xChange][yChange]
+      const newWords = {...ret[word.orientation]}
+      newWords[word.position][changed - start] = field[xChange][yChange]
       setWords(newWords)
     }
 

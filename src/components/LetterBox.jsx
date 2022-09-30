@@ -18,6 +18,8 @@ function LetterBox(params) {
       <input
         type="text"
         ref={input}
+        value={value}
+
         onInput={e => {
           const newValue = (e.target.value[0] || '').toUpperCase()
           params.onInput(newValue)
@@ -25,7 +27,6 @@ function LetterBox(params) {
         }}
         onFocus={params.onFocus}
         onBlur={params.onBlur}
-        value={value}
       />
     </div>
   )

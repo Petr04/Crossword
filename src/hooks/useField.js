@@ -23,18 +23,13 @@ function useField(width, height, result) {
     setYChange(j)
   }, [field])
 
-  const [cellPositions] = useState(genField(width, height, result,
-    (last, word) => ({
-      orientations: last
-        ? last.orientations.concat(word.orientation)
-        : [word.orientation],
-      positions: last
-        ? last.positions.concat(word.position)
-        : [word.position],
-    })
+  const [cellWords] = useState(genField(width, height, result,
+    (last, word) => {
+      return (last || []).concat([word])
+    }
   ))
 
-  return [field, setCell, cellPositions, xChange, yChange]
+  return [field, setCell, cellWords, xChange, yChange]
 }
 
 export default useField
