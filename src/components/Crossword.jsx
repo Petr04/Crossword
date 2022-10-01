@@ -1,11 +1,11 @@
 import { useCallback, useMemo } from 'react'
 import useField from '../hooks/useField'
 import useWords from '../hooks/useWords'
-import useCurrentWord from '../hooks/useDelta'
+import useCurrentWord from '../hooks/useCurrentWord'
 import useFocused from '../hooks/useFocused'
 import checkCoord from '../lib/checkCoord'
 import LetterBox from './LetterBox'
-import { sum, sub } from '../lib/array'
+import { sum } from '../lib/array'
 
 function Crossword({layout}) {
   const [width, height] = [layout.cols, layout.rows] // wrap in hook
@@ -21,30 +21,34 @@ function Crossword({layout}) {
     [currentWord]
   )
 
-  const nextByCondition = useCallback(check => {
+  const nextByCondition = useCallback((check, delta) => {
     for (let i = 1; true; i++) {
       const nextFocused = sum(focused, delta.map(x => x * i))
+      if (!checkCoord(nextFocused, cellWords)) return null
+
       const nextFocusedValue = field[nextFocused[0]][nextFocused[1]]
       if (nextFocusedValue === null) return null
       if (check(nextFocusedValue)) return nextFocused
     }
-  }, [field, focused, delta])
+  }, [field, focused, cellWords])
 
   const handleInput = useCallback((i, j, newVal) => {
     if (newVal.length >= field[i][j].length && newVal.length > 0) {
-      const nextFocused = nextByCondition(s => s === '')
+      const nextFocused = nextByCondition(s => s === '', delta)
       if (nextFocused)
         setFocused( nextFocused )
     }
 
     setCell(i, j, newVal)
-  }, [field, setCell, setFocused, nextByCondition])
+  }, [field, setCell, setFocused, delta, nextByCondition])
 
   const handleBackspace = useCallback((i, j) => {
     if (field[i][j] === '') {
-      setFocused( sub(focused, delta) )
+      const nextFocused = nextByCondition(s => s !== '', delta.map(x => -x))
+      if (nextFocused)
+        setFocused( nextFocused )
     }
-  }, [delta, field, focused, setFocused])
+  }, [field, setFocused, delta, nextByCondition])
 
   const handleArrow = useCallback((i, j, direction) => {
     const directionToDelta = {

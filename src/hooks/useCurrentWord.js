@@ -12,8 +12,6 @@ function useCurrentWord(focused, cellWords) {
       return lastWord.current
     }
 
-    // const orientation = words[0].orientation
-    // return orientation === 'across' ? [1, 0] : [0, 1]
     return words[0]
   }, [focused, cellWords])
 
