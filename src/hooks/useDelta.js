@@ -1,24 +1,25 @@
 import { useRef, useMemo, useEffect } from 'react'
 
-function useDelta(focused, cellWords) {
-  const lastDelta = useRef([1, 0])
+function useCurrentWord(focused, cellWords) {
+  const lastWord = useRef([1, 0])
 
-  const delta = useMemo(() => {
+  const currentWord = useMemo(() => {
     if (focused === null) return [1, 0]
 
     const words = cellWords[focused[0]][focused[1]]
 
     if (words.length > 1) {
-      return lastDelta.current
+      return lastWord.current
     }
 
-    const orientation = words[0].orientation
-    return orientation === 'across' ? [1, 0] : [0, 1]
+    // const orientation = words[0].orientation
+    // return orientation === 'across' ? [1, 0] : [0, 1]
+    return words[0]
   }, [focused, cellWords])
 
-  useEffect(() => {lastDelta.current = delta}, [delta])
+  useEffect(() => {lastWord.current = currentWord}, [currentWord])
 
-  return delta
+  return currentWord
 }
 
-export default useDelta
+export default useCurrentWord

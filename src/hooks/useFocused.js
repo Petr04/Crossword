@@ -1,12 +1,13 @@
 import { useState, useCallback } from 'react'
+import checkCoord from '../lib/checkCoord'
 
-function useFocused(checkCoord) {
+function useFocused(cellWords) {
   const [focused, setFocused] = useState(null)
 
   const setFocusedWithCheck = useCallback(nextFocused => {
-    if (checkCoord(nextFocused))
+    if (checkCoord(nextFocused, cellWords))
       setFocused(nextFocused)
-  }, [checkCoord])
+  }, [cellWords])
 
   return [focused, setFocusedWithCheck]
 }

@@ -1,8 +1,9 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import useField from '../hooks/useField'
 import useWords from '../hooks/useWords'
-import useDelta from '../hooks/useDelta'
+import useCurrentWord from '../hooks/useDelta'
 import useFocused from '../hooks/useFocused'
+import checkCoord from '../lib/checkCoord'
 import LetterBox from './LetterBox'
 import { sum, sub } from '../lib/array'
 
@@ -11,23 +12,33 @@ function Crossword({layout}) {
   const [field, setCell, cellWords, xChange, yChange] =
     useField(width, height, layout.result)
 
-  const checkCoord = useCallback(coord =>
-    Boolean((cellWords[coord[0]] || [])[coord[1]]),
-    [cellWords]
-  )
-
   const words = useWords(field, layout.result, cellWords, xChange, yChange)
 
-  const [focused, setFocused] = useFocused(checkCoord)
-  const delta = useDelta(focused, cellWords)
+  const [focused, setFocused] = useFocused(cellWords)
+  const currentWord = useCurrentWord(focused, cellWords)
+  const delta = useMemo(
+    () => currentWord.orientation === 'across' ? [1, 0] : [0, 1],
+    [currentWord]
+  )
+
+  const nextByCondition = useCallback(check => {
+    for (let i = 1; true; i++) {
+      const nextFocused = sum(focused, delta.map(x => x * i))
+      const nextFocusedValue = field[nextFocused[0]][nextFocused[1]]
+      if (nextFocusedValue === null) return null
+      if (check(nextFocusedValue)) return nextFocused
+    }
+  }, [field, focused, delta])
 
   const handleInput = useCallback((i, j, newVal) => {
     if (newVal.length >= field[i][j].length && newVal.length > 0) {
-      setFocused( sum(focused, delta) )
+      const nextFocused = nextByCondition(s => s === '')
+      if (nextFocused)
+        setFocused( nextFocused )
     }
 
     setCell(i, j, newVal)
-  }, [delta, field, focused, setCell, setFocused])
+  }, [field, setCell, setFocused, nextByCondition])
 
   const handleBackspace = useCallback((i, j) => {
     if (field[i][j] === '') {
@@ -44,19 +55,19 @@ function Crossword({layout}) {
     }
     const delta = directionToDelta[direction]
     const maxCoord = ['right', 'left'].includes(direction)
-      ? layout.cols
-      : layout.rows
+      ? width
+      : height
 
     for (let i = 1; i < maxCoord; i++) {
       const nextFocused = sum(focused, delta.map(x => x * i))
-      if (checkCoord(nextFocused)) {
+      if (checkCoord(nextFocused, cellWords)) {
         setFocused(nextFocused)
         break
       }
     }
 
     setFocused( sum(focused, delta) )
-  }, [checkCoord, focused, layout.cols, layout.rows, setFocused])
+  }, [focused, width, height, setFocused, cellWords])
 
   const handleKeyDown = useCallback((i, j, e) => {
     if (e.key === 'Backspace')
