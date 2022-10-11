@@ -1,15 +1,25 @@
 .LetterBox {
   --size: 50px;
+  --opacity: .7;
+
   width: var(--size);
   height: var(--size);
 
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, var(--opacity));
   cursor: text;
 
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.LetterBox.correct {
+  background: hsla(120, 80%, 80%, var(--opacity));
+}
+
+.LetterBox.wrong {
+  background: hsla(0, 80%, 80%, var(--opacity));
 }
 
 .LetterBox::before {

@@ -1,25 +1,60 @@
 import { useCallback, useMemo } from 'react'
 import useField from '../hooks/useField'
+import useCellWords from '../hooks/useCellWords'
 import useWords from '../hooks/useWords'
+import useWordStatuses from '../hooks/useWordStatuses'
 import useCurrentWord from '../hooks/useCurrentWord'
 import useFocused from '../hooks/useFocused'
-import checkCoord from '../lib/checkCoord'
 import LetterBox from './LetterBox'
+import checkCoord from '../lib/checkCoord'
+import iterateWord from '../lib/iterateWord'
 import { sum } from '../lib/array'
+
+function wordIncludes(word, coord) {
+  return Array.from(iterateWord(word)).some(wordCoord =>
+    wordCoord[0] === coord[0] && wordCoord[1] === coord[1])
+}
 
 function Crossword({layout}) {
   const [width, height] = [layout.cols, layout.rows] // wrap in hook
-  const [field, setCell, cellWords, xChange, yChange] =
-    useField(width, height, layout.result)
+  const [field, setCell, xChange, yChange] = useField(width, height, layout.result)
+  const cellWords = useCellWords(width, height, layout.result)
 
   const words = useWords(field, layout.result, cellWords, xChange, yChange)
 
   const [focused, setFocused] = useFocused(cellWords)
   const currentWord = useCurrentWord(focused, cellWords)
   const delta = useMemo(
-    () => currentWord.orientation === 'across' ? [1, 0] : [0, 1],
+    () => currentWord !== null
+      ? (currentWord.orientation === 'across' ? [1, 0] : [0, 1])
+      : [0, 0],
     [currentWord]
   )
+
+  const wordStatuses = useWordStatuses(words, currentWord)
+  const getStatusByCoord = useCallback((x, y) => {
+    if (!currentWord) return 'default'
+
+    const words = cellWords[x][y]
+    if (words.length > 1) {
+      const statuses = words.map(word => wordStatuses[word.orientation][word.position])
+
+      if (statuses.some(x => !x)) {
+        return statuses.filter(Boolean)[0]
+      }
+
+      if (wordIncludes(currentWord, [x, y])) {
+        return wordStatuses[currentWord.orientation][currentWord.position]
+      }
+
+      const word = words.filter(word => word.orientation === 'across')[0]
+      return wordStatuses['across'][word.position]
+    }
+    const word = words[0]
+    return wordStatuses[word.orientation][word.position]
+
+
+  }, [cellWords, wordStatuses, currentWord])
 
   const nextByCondition = useCallback((check, delta) => {
     for (let i = 1; true; i++) {
@@ -97,6 +132,9 @@ function Crossword({layout}) {
             value={val}
             x={i} y={j}
             focus={focused && (focused[0] === i && focused[1] === j)}
+            status={
+              getStatusByCoord(i, j)
+            }
 
             onInput={newVal => handleInput(i, j, newVal)}
             onFocus={() => {

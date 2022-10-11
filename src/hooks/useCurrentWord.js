@@ -1,10 +1,10 @@
 import { useRef, useMemo, useEffect } from 'react'
 
 function useCurrentWord(focused, cellWords) {
-  const lastWord = useRef([1, 0])
+  const lastWord = useRef(null)
 
   const currentWord = useMemo(() => {
-    if (focused === null) return [1, 0]
+    if (focused === null) return null
 
     const words = cellWords[focused[0]][focused[1]]
 

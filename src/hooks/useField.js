@@ -1,16 +1,6 @@
 import { useState, useCallback } from 'react'
-import iterateWord from '../lib/iterateWord'
-import { generate, change } from '../lib/array2d'
-
-function genField(width, height, result, f) {
-  const field = generate(width, height, null)
-  for (let word of (result || [])) {
-    for (let [x, y] of iterateWord(word)) {
-      field[x][y] = f(field[x][y], word)
-    }
-  }
-  return field
-}
+import genField from '../lib/genField'
+import { change } from '../lib/array2d'
 
 function useField(width, height, result) {
   const [field, setField] = useState(genField(width, height, result, () => ''))
@@ -23,13 +13,7 @@ function useField(width, height, result) {
     setYChange(j)
   }, [field])
 
-  const [cellWords] = useState(genField(width, height, result,
-    (last, word) => {
-      return (last || []).concat([word])
-    }
-  ))
-
-  return [field, setCell, cellWords, xChange, yChange]
+  return [field, setCell, xChange, yChange]
 }
 
 export default useField

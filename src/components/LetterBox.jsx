@@ -1,19 +1,25 @@
 import { useState, useRef, useEffect } from 'react'
+import classNames from 'classnames';
 import '../styles/LetterBox.css'
 
-function LetterBox(params) {
-  const [value, setValue] = useState(params.value || '')
+function LetterBox({defaultValue, x, y, focus, status, ...callbacks}) {
+  const [value, setValue] = useState(defaultValue || '')
 
   const input = useRef(null)
   useEffect(
-    () => params.focus ? input.current.focus() : input.current.blur(),
-    [params]
+    () => focus ? input.current.focus() : input.current.blur(),
+    [focus]
   )
 
   return (
     <div
-      className="LetterBox"
-      style={{gridColumn: params.x+1, gridRow: params.y+1}}
+      className={classNames(
+        'LetterBox', {
+          correct: status === 'correct',
+          wrong: status === 'wrong',
+        }
+      )}
+      style={{gridColumn: x+1, gridRow: y+1}}
     >
       <input
         type="text"
@@ -22,17 +28,17 @@ function LetterBox(params) {
 
         onInput={e => {
           const newValue = (e.target.value[0] || '').toUpperCase()
-          params.onInput(newValue)
+          callbacks.onInput(newValue)
           setValue(newValue)
         }}
         onFocus={e => {
           e.currentTarget.setSelectionRange(
             e.currentTarget.value.length, e.currentTarget.value.length
           )
-          params.onFocus(e)
+          callbacks.onFocus(e)
         }}
-        onBlur={params.onBlur}
-        onKeyDown={params.onKeyDown}
+        onBlur={callbacks.onBlur}
+        onKeyDown={callbacks.onKeyDown}
       />
     </div>
   )
