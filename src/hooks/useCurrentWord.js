@@ -10,6 +10,7 @@ function useCurrentWord(focused, cellWords) {
 
     if (words.length > 1) {
       return lastWord.current
+        || words.filter(word => word.orientation === 'across')[0]
     }
 
     return words[0]

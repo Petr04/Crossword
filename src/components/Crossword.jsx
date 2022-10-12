@@ -1,11 +1,11 @@
-import { useCallback, useMemo } from 'react'
+import { useState, useCallback, useMemo, useEffect } from 'react'
 import useField from '../hooks/useField'
 import useCellWords from '../hooks/useCellWords'
 import useWords from '../hooks/useWords'
 import useWordStatuses from '../hooks/useWordStatuses'
 import useCurrentWord from '../hooks/useCurrentWord'
 import useFocused from '../hooks/useFocused'
-import LetterBox from './LetterBox'
+import Cell from './Cell'
 import checkCoord from '../lib/checkCoord'
 import iterateWord from '../lib/iterateWord'
 import { sum } from '../lib/array'
@@ -15,7 +15,7 @@ function wordIncludes(word, coord) {
     wordCoord[0] === coord[0] && wordCoord[1] === coord[1])
 }
 
-function Crossword({layout}) {
+function Crossword({layout, onWordFocus, onCellElementFocus, onCoordFocus}) {
   const [width, height] = [layout.cols, layout.rows] // wrap in hook
   const [field, setCell, xChange, yChange] = useField(width, height, layout.result)
   const cellWords = useCellWords(width, height, layout.result)
@@ -30,6 +30,14 @@ function Crossword({layout}) {
       : [0, 0],
     [currentWord]
   )
+  const [focusedCellElement, setFocusedCellElement] = useState(null)
+
+  useEffect(() => onCoordFocus?.(focused),
+    [focused, onCoordFocus])
+  useEffect(() => onWordFocus?.(currentWord),
+    [currentWord, onWordFocus])
+  useEffect(() => onCellElementFocus?.(focusedCellElement),
+    [focusedCellElement, onCellElementFocus])
 
   const wordStatuses = useWordStatuses(words, currentWord)
   const getStatusByCoord = useCallback((x, y) => {
@@ -127,7 +135,7 @@ function Crossword({layout}) {
     <div className="Crossword" style={containerStyle}>
       {field.map((row, i) =>
         row.map((val, j) => val != null &&
-          <LetterBox
+          <Cell
             key={`${i}.${j}`}
             value={val}
             x={i} y={j}
@@ -137,9 +145,11 @@ function Crossword({layout}) {
             }
 
             onInput={newVal => handleInput(i, j, newVal)}
-            onFocus={() => {
+            onFocus={(e) => {
+              setFocusedCellElement(e.target)
               setFocused([i, j])
             }}
+            onBlur={() => setFocusedCellElement(null)}
             onKeyDown={e => handleKeyDown(i, j, e)}
           />
         )
