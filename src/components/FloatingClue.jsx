@@ -1,6 +1,6 @@
-import '../styles/Tip.css'
+import '../styles/FloatingClue.css'
 
-function Tip({word, cellElement}) {
+function FloatingClue({word, cellElement}) {
   const visible = Boolean(cellElement)
   if (!visible) return null
 
@@ -18,10 +18,10 @@ function Tip({word, cellElement}) {
   }
 
   return (
-    <div className="Tip" style={style}>
+    <div className="FloatingClue" style={style}>
       { word.clue }
     </div>
   )
 }
 
-export default Tip
+export default FloatingClue

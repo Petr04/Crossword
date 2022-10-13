@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import './App.css'
 import Crossword from './components/Crossword'
-import Tip from './components/Tip'
+import FloatingClue from './components/FloatingClue'
 import CrosswordAPI from './api/CrosswordAPI'
 
 function App() {
@@ -22,7 +22,7 @@ function App() {
             onCellElementFocus={setCellElement}
             theme="light" // set "dark" if bg image is dark
           />}
-          <Tip
+          <FloatingClue
             word={currentWord}
             cellElement={cellElement}
           />
