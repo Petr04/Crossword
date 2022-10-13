@@ -34,6 +34,9 @@ function Crossword({layout, theme, onWordFocus, onCellElementFocus, onCoordFocus
   )
   const [focusedCellElement, setFocusedCellElement] = useState(null)
 
+
+  // Provide callbacks
+
   useEffect(() => onCoordFocus?.(focused),
     [focused, onCoordFocus])
   useEffect(() => onWordFocus?.(currentWord),
@@ -41,9 +44,12 @@ function Crossword({layout, theme, onWordFocus, onCellElementFocus, onCoordFocus
   useEffect(() => onCellElementFocus?.(focusedCellElement),
     [focusedCellElement, onCellElementFocus])
 
-  const wordStatuses = useWordStatuses(words, currentWord)
+
+  // Word statuses
+
+  const wordStatuses = useWordStatuses(words, currentWord, cellWords)
   const getStatusByCoord = useCallback((x, y) => {
-    if (!currentWord) return 'default'
+    if (!currentWord) return null
 
     const words = cellWords[x][y]
     if (words.length > 1) {
@@ -65,9 +71,12 @@ function Crossword({layout, theme, onWordFocus, onCellElementFocus, onCoordFocus
 
   }, [cellWords, wordStatuses, currentWord])
 
+
+  // Handle keys
+
   const nextByCondition = useCallback((check, delta) => {
     for (let i = 1; true; i++) {
-      const nextFocused = sum(focused, delta.map(x => x * i))
+      let nextFocused = sum(focused, delta.map(x => x * i))
       if (!checkCoord(nextFocused, cellWords)) return null
 
       const nextFocusedValue = field[nextFocused[0]][nextFocused[1]]
@@ -78,7 +87,10 @@ function Crossword({layout, theme, onWordFocus, onCellElementFocus, onCoordFocus
 
   const handleInput = useCallback((i, j, newVal) => {
     if (newVal.length >= field[i][j].length && newVal.length > 0) {
-      const nextFocused = nextByCondition(s => s === '', delta)
+      const nextFocused = [delta, delta.map(x => 1 - x)]
+        .map(d => nextByCondition(s => s === '', d))
+        .find(Boolean)
+
       if (nextFocused)
         setFocused( nextFocused )
     }
@@ -88,7 +100,11 @@ function Crossword({layout, theme, onWordFocus, onCellElementFocus, onCoordFocus
 
   const handleBackspace = useCallback((i, j) => {
     if (field[i][j] === '') {
-      const nextFocused = nextByCondition(s => s !== '', delta.map(x => -x))
+      const deltaNegative = delta.map(x => -x)
+      const nextFocused = [deltaNegative, deltaNegative.map(x => -1 - x)]
+        .map(d => nextByCondition(s => s !== '', d))
+        .find(Boolean)
+
       if (nextFocused)
         setFocused( nextFocused )
     }
@@ -125,6 +141,9 @@ function Crossword({layout, theme, onWordFocus, onCellElementFocus, onCoordFocus
       handleArrow(i, j, e.key.slice(5).toLowerCase())
     }
   }, [handleArrow, handleBackspace])
+
+
+  // Render
 
   const containerStyle = {
     gridTemplateColumns: `repeat(${width+1}, 1fr)`,
