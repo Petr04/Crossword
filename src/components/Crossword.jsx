@@ -56,14 +56,14 @@ function Crossword({layout, theme, onWordFocus, onCellElementFocus, onCoordFocus
       const statuses = words.map(word => wordStatuses[word.orientation][word.position])
 
       if (statuses.some(x => !x)) {
-        return statuses.filter(Boolean)[0]
+        return statuses.find(Boolean)
       }
 
       if (wordIncludes(currentWord, [x, y])) {
         return wordStatuses[currentWord.orientation][currentWord.position]
       }
 
-      const word = words.filter(word => word.orientation === 'across')[0]
+      const word = words.find(word => word.orientation === 'across')
       return wordStatuses['across'][word.position]
     }
     const word = words[0]
