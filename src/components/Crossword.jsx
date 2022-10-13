@@ -6,17 +6,19 @@ import useWordStatuses from '../hooks/useWordStatuses'
 import useCurrentWord from '../hooks/useCurrentWord'
 import useFocused from '../hooks/useFocused'
 import Cell from './Cell'
+import PositionNumber from './PositionNumber'
 import checkCoord from '../lib/checkCoord'
 import iterateWord from '../lib/iterateWord'
 import { sum } from '../lib/array'
+import '../styles/Crossword.css'
 
 function wordIncludes(word, coord) {
   return Array.from(iterateWord(word)).some(wordCoord =>
     wordCoord[0] === coord[0] && wordCoord[1] === coord[1])
 }
 
-function Crossword({layout, onWordFocus, onCellElementFocus, onCoordFocus}) {
-  const [width, height] = [layout.cols, layout.rows] // wrap in hook
+function Crossword({layout, theme, onWordFocus, onCellElementFocus, onCoordFocus}) {
+  const [width, height] = [layout.cols, layout.rows]
   const [field, setCell, xChange, yChange] = useField(width, height, layout.result)
   const cellWords = useCellWords(width, height, layout.result)
 
@@ -60,7 +62,6 @@ function Crossword({layout, onWordFocus, onCellElementFocus, onCoordFocus}) {
     }
     const word = words[0]
     return wordStatuses[word.orientation][word.position]
-
 
   }, [cellWords, wordStatuses, currentWord])
 
@@ -126,9 +127,8 @@ function Crossword({layout, onWordFocus, onCellElementFocus, onCoordFocus}) {
   }, [handleArrow, handleBackspace])
 
   const containerStyle = {
-    display: 'grid',
-    gridTemplateColumns: `repeat(${width}, 1fr)`,
-    gridTemplateRows: `repeat(${height}, 1fr)`,
+    gridTemplateColumns: `repeat(${width+1}, 1fr)`,
+    gridTemplateRows: `repeat(${height+1}, 1fr)`,
   }
 
   return (
@@ -138,7 +138,7 @@ function Crossword({layout, onWordFocus, onCellElementFocus, onCoordFocus}) {
           <Cell
             key={`${i}.${j}`}
             value={val}
-            x={i} y={j}
+            x={i+1} y={j+1}
             focus={focused && (focused[0] === i && focused[1] === j)}
             status={
               getStatusByCoord(i, j)
@@ -154,6 +154,17 @@ function Crossword({layout, onWordFocus, onCellElementFocus, onCoordFocus}) {
           />
         )
       )}
+      {layout.result
+        .filter(word =>
+          !(words.across[word.position] && words.down[word.position])
+          || word.orientation === 'across'
+        ).map(word => <PositionNumber
+          key={`${word.orientation[0]}${word.position}`}
+          theme={theme}
+          word={word}
+          cellWords={cellWords}
+        />)
+      }
     </div>
   )
 }

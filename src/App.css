@@ -1,9 +1,6 @@
 .App {
   height: 100vh;
-/*  display: flex;
-  align-items: center;
-  justify-content: center;
-*/  overflow: scroll;
+  overflow: scroll;
 }
 
 .GameWidget {
@@ -11,7 +8,10 @@
   align-items: center;
   justify-content: center;
   background:
+    /* light image */
     url(https://superkid.online/static/media/bg1.b4a3e5acbab5899b9adf.png)
+    /* dark image */
+    /*url(https://superkid.online/static/media/space.e9e9271c667df6515b8f.png)*/
     no-repeat;
   background-size: cover;
   width: 970px;
@@ -25,6 +25,5 @@
   justify-content: center;
   width: 884px;
   height: 480px;
-  /*border: 2px dashed #f007;*/
   border-radius: 10px;
 }

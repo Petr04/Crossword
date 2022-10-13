@@ -1,9 +1,5 @@
-.LetterBox {
-  --size: 50px;
+.Cell {
   --opacity: .7;
-
-  width: var(--size);
-  height: var(--size);
 
   background: rgba(255, 255, 255, var(--opacity));
   cursor: text;
@@ -14,29 +10,31 @@
   justify-content: center;
 }
 
-.LetterBox.correct {
+.Cell.correct {
   background: hsla(120, 80%, 80%, var(--opacity));
 }
 
-.LetterBox.wrong {
+.Cell.wrong {
   background: hsla(0, 80%, 80%, var(--opacity));
 }
 
-.LetterBox::before {
+.Cell::before {
   display: block;
   content: " ";
-  width: calc(var(--size) + 1px);
-  height: calc(var(--size) + 1px);
+  width: calc(var(--cell-size) + 1px);
+  height: calc(var(--cell-size) + 1px);
   position: absolute;
 
   top: -.5px;
   left: -.5px;
 
-  background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='%23808080FF' stroke-width='2' stroke-dasharray='12.5%' stroke-dashoffset='6.25%' stroke-linecap='square'/%3e%3c/svg%3e");
   cursor: default;
+
+  /* stroke */
+  background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='%23808080FF' stroke-width='2' stroke-dasharray='12.5%' stroke-dashoffset='6.25%' stroke-linecap='square'/%3e%3c/svg%3e");
 }
 
-.LetterBox input {
+.Cell input {
   display: block;
   position: absolute;
   width: 100%;

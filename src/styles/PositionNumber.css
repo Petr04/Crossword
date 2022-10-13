@@ -1,0 +1,13 @@
+.PositionNumber {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-weight: bold;
+  font-size: 40px;
+  opacity: .3;
+}
+
+.PositionNumber.dark {
+  color: white;
+}

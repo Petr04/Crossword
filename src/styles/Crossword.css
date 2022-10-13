@@ -1,0 +1,9 @@
+.Crossword {
+  display: grid;
+  --cell-size: 50px;
+}
+
+.Crossword > * {
+  width: var(--cell-size);
+  height: var(--cell-size);
+}

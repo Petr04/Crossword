@@ -20,6 +20,7 @@ function App() {
             layout={layout}
             onWordFocus={setCurrentWord}
             onCellElementFocus={setCellElement}
+            theme="light" // set "dark" if bg image is dark
           />}
           <Tip
             word={currentWord}

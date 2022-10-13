@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import classNames from 'classnames';
-import '../styles/LetterBox.css'
+import '../styles/Cell.css'
 
 function LetterBox({defaultValue, x, y, focus, status, ...callbacks}) {
   const [value, setValue] = useState(defaultValue || '')
@@ -14,7 +14,7 @@ function LetterBox({defaultValue, x, y, focus, status, ...callbacks}) {
   return (
     <div
       className={classNames(
-        'LetterBox', {
+        'Cell', {
           correct: status === 'correct',
           wrong: status === 'wrong',
         }
