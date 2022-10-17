@@ -1,6 +1,5 @@
 .Crossword {
   display: grid;
-  --cell-size: 50px;
 }
 
 .Crossword > * {

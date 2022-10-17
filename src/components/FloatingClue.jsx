@@ -1,20 +1,26 @@
 import '../styles/FloatingClue.css'
 
-function FloatingClue({word, cellElement}) {
+function FloatingClue({word, cellElement, parent}) {
   const visible = Boolean(cellElement)
   if (!visible) return null
 
   const rect = cellElement.getBoundingClientRect()
+  const parentRect = parent.getBoundingClientRect()
+  const rectRelative = {
+    top: rect.top - parentRect.top,
+    left: rect.left - parentRect.left,
+    bottom: rect.bottom - parentRect.top,
+    right: rect.right - parentRect.left,
+  }
 
   const margin = 10;
   const style = {
-    position: 'absolute',
     left: word.orientation === 'across'
-      ? rect.left
-      : rect.right + margin,
+      ? rectRelative.left
+      : rectRelative.right + margin,
     top: word.orientation === 'across'
-      ? rect.bottom + margin
-      : rect.top,
+      ? rectRelative.bottom + margin
+      : rectRelative.top,
   }
 
   return (

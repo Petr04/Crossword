@@ -49,5 +49,5 @@
   outline: none;
   text-align: center;
   font-weight: bold;
-  font-size: 40px;
+  font-size: calc(var(--cell-size) * .8);
 }

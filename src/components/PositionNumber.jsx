@@ -13,7 +13,11 @@ function PositionNumber({word, cellWords, theme}) {
 
   return (
     <div
-      className={classNames('PositionNumber', { dark: theme === 'dark' })}
+      className={classNames(
+        'PositionNumber',
+        'SemiTransparentText',
+        { dark: theme === 'dark' }
+      )}
       style={style}
     >
       { word.position }

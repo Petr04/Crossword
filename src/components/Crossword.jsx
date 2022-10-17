@@ -145,10 +145,10 @@ function Crossword({layout, theme, onWordFocus, onCellElementFocus, onCoordFocus
 
   // Render
 
-  const containerStyle = {
+  const containerStyle = useMemo(() => ({
     gridTemplateColumns: `repeat(${width+1}, 1fr)`,
     gridTemplateRows: `repeat(${height+1}, 1fr)`,
-  }
+  }), [width, height])
 
   return (
     <div className="Crossword" style={containerStyle}>

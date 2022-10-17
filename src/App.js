@@ -1,30 +1,23 @@
-import { useState, useEffect } from 'react'
+import { useMemo } from 'react'
+import { useResizeDetector } from 'react-resize-detector';
+import GameLayout from './components/GameLayout'
 import './App.css'
-import Crossword from './components/Crossword'
-import FloatingClue from './components/FloatingClue'
-import CrosswordAPI from './api/CrosswordAPI'
 
 function App() {
-  const [layout, setLayout] = useState(null)
-  useEffect(() => {
-    CrosswordAPI.getCrossword().then(setLayout)
-  }, [])
-  const [currentWord, setCurrentWord] = useState(null)
-  const [cellElement, setCellElement] = useState(null)
+  const { width, ref } = useResizeDetector();
+  const cellSize = useMemo(() => {
+    if (!width) return '50px'
+    return width * .038
+  }, [width])
 
   return (
     <div className="App">
-      <div className="GameWidget">
+      <div className="GameWidget" ref={ref}>
         <div className="GameField">
-          {layout && <Crossword
-            layout={layout}
-            onWordFocus={setCurrentWord}
-            onCellElementFocus={setCellElement}
-            theme="light" // set "dark" if bg image is dark
-          />}
-          <FloatingClue
-            word={currentWord}
-            cellElement={cellElement}
+          <GameLayout
+            cellSize={cellSize}
+            theme="light" // "light" | "dark"
+                          // set "dark" if bg image is dark
           />
         </div>
       </div>

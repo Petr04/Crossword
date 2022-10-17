@@ -1,0 +1,31 @@
+.GameLayout {
+  display: flex;
+  flex-direction: row;
+  gap: calc(var(--cell-size) * .8);
+  position: relative;
+}
+
+.ClueContainer {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--cell-size) * .2);
+}
+
+.SemiTransparentText {
+  font-weight: bold;
+  font-size: calc(var(--cell-size) * .8);
+  opacity: .5;
+}
+
+.SemiTransparentText.dark {
+  color: white;
+}
+
+.ClueContainer {
+  width: calc(var(--cell-size) * 4);
+}
+
+.CluesHeader {
+  font-size: calc(var(--cell-size) * .47);
+  margin: 0 calc(var(--cell-size) * .2);
+}
